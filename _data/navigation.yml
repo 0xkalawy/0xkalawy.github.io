@@ -1,8 +1,8 @@
 main:
   - title: "All Categories"
     url: /categories/
-  - title: "Reverse Engineering"
-    url: /categories/#reverse-engineering
+  - title: "Bug Bounty"
+    url: /categories/#bug-bounty
   - title: "Malware Analysis"
     url: /categories/#malware-analysis
   - title: "Tutorials & Labs"
