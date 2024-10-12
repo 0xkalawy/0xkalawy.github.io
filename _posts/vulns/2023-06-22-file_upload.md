@@ -101,7 +101,7 @@ Assuming that our malicious file upload has been stopped by the server, here are
 
 I love to create mindmap for everything, so:
 
-![mindmap](file://assets/images/_posts/file_upload/mindmap.png)
+![mindmap](/var/www/html/0xkalawy.github.io/assets/images/_posts/file_upload/mindmap.png)
 
 # Summary
 1. When the file name isn’t validated carefully, the attacker can overwrite critical files.
