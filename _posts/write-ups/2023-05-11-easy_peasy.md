@@ -2,7 +2,7 @@
 title: "Try Hack Me: Easy Peasy Walkthrough"
 classes: wide
 header:
-  teaser: /assets/images/Covers/easy_peasy.jpg
+  teaser: /assets/images/Covers/easy_peasy.png
 ribbon:   DodgerBlue
 description: "We will walkthrough 'Easy Peasy' the challenge provided by THM"
 categories:
