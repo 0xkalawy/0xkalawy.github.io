@@ -116,7 +116,7 @@ it’s worth knowing that the server may have different keys for different token
 
 as I’m a mindmap fanboy, I create this:
 
-![mindmap](file://assets/images/_posts/vulns/jwt_basic_attacks/mindmap.png)
+![mindmap](/assets/images/_posts/vulns/jwt_basic_attacks/mindmap.png)
 
 # Reports
 
