@@ -5,5 +5,7 @@ main:
     url: /categories/#bug-bounty
   - title: "Vulnerabilities"
     url: /categories/#vulns
+  - title: "Write-ups"
+    url: /categories/#write-ups
   - title: "About Me"
     url: /about/
