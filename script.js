@@ -17,6 +17,39 @@ themeButton.addEventListener("click", () => {
   localStorage.setItem("theme", nextTheme);
 });
 
+const marqueeTrack = document.querySelector(".signal-track");
+const marqueeSource = marqueeTrack?.querySelector(".signal-group");
+let marqueeResizeFrame;
+
+function setupMarquee() {
+  if (!marqueeTrack || !marqueeSource) return;
+
+  marqueeTrack.classList.remove("is-ready");
+  marqueeTrack.querySelectorAll("[data-marquee-copy]").forEach((copy) => copy.remove());
+
+  const gap = Number.parseFloat(getComputedStyle(marqueeTrack).columnGap) || 32;
+  const shift = marqueeSource.getBoundingClientRect().width + gap;
+  const copyCount = Math.ceil(window.innerWidth / shift) + 1;
+
+  for (let index = 0; index < copyCount; index += 1) {
+    const copy = marqueeSource.cloneNode(true);
+    copy.dataset.marqueeCopy = "";
+    copy.setAttribute("aria-hidden", "true");
+    marqueeTrack.append(copy);
+  }
+
+  marqueeTrack.style.setProperty("--marquee-shift", `${shift}px`);
+  marqueeTrack.style.setProperty("--marquee-duration", `${Math.max(10, shift / 42)}s`);
+  requestAnimationFrame(() => marqueeTrack.classList.add("is-ready"));
+}
+
+setupMarquee();
+document.fonts?.ready.then(setupMarquee);
+window.addEventListener("resize", () => {
+  cancelAnimationFrame(marqueeResizeFrame);
+  marqueeResizeFrame = requestAnimationFrame(setupMarquee);
+});
+
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 const postRows = [...document.querySelectorAll(".post-row")];
 const emptyState = document.querySelector(".empty-state");
@@ -34,7 +67,7 @@ function filterPosts({ kind = "all", query = "" } = {}) {
     if (shouldShow) visible += 1;
   });
 
-  emptyState.hidden = visible !== 0;
+  if (emptyState) emptyState.hidden = visible !== 0;
 }
 
 filterButtons.forEach((button) => {
