@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Kalawy's security research, field notes, and experiments."
+    />
+    <meta name="theme-color" content="#071821" />
+    <title>Kalawy — Security Research</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header shell">
+      <a class="brand" href="#top" aria-label="Kalawy, home">
+        <span class="brand-mark" aria-hidden="true">ك</span>
+        <span class="brand-name">KALAWY.LAB <small>كلاوي</small></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="active" href="#writing">Writing</a>
+        <a href="#research">Research</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-button search-trigger" type="button" aria-label="Search posts">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+          <kbd>/</kbd>
+        </button>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch to light theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.5"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+          </svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 15.2A8 8 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2Z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero shell" id="top">
+        <div class="hero-stage">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="status-dot"></span> SECURITY RESEARCH · CAIRO, EG</div>
+            <h1>Breaking things,<br /><em>with a straight face.</em></h1>
+            <p class="hero-intro">
+              Practical notes on browser behavior, web vulnerabilities, and every suspicious
+              assumption that looked innocent at first.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#writing">
+                Open the case files
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              </a>
+              <a class="text-link" href="https://github.com/" target="_blank" rel="noreferrer">
+                GitHub <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-character" aria-label="Illustration of Kalawy investigating a computer bug">
+            <div class="speech-bubble" lang="ar" dir="rtl">الجينيس بتاعنا.</div>
+            <div class="character-halo"></div>
+            <img src="assets/kalawy-mascot.png" alt="Cartoon mascot with ginger curls inspecting a bug on an old laptop" />
+            <span class="character-label label-one">BUG HUNTER</span>
+            <span class="character-label label-two">CASE #404</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="Research topics">
+        <div class="signal-track">
+          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
+          <span>REVERSE ENGINEERING</span><i>●</i>
+          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
+          <span>REVERSE ENGINEERING</span><i>●</i>
+        </div>
+      </section>
+
+      <section class="featured shell" id="research">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">01 / FEATURED</p>
+            <h2>Case file of the month</h2>
+          </div>
+          <span class="entry-count">01 deep dive</span>
+        </div>
+
+        <a class="featured-card" href="article.html">
+          <div class="featured-visual" aria-hidden="true">
+            <div class="grid-paper"></div>
+            <div class="diagram-node node-a">A</div>
+            <div class="diagram-node node-b">B</div>
+            <svg viewBox="0 0 600 360" preserveAspectRatio="none">
+              <path class="diagram-path path-one" d="M150 190 C250 60 350 300 475 150"></path>
+              <path class="diagram-path path-two" d="M150 190 C290 250 340 80 475 150"></path>
+            </svg>
+            <span class="visual-note note-one">origin_a</span>
+            <span class="visual-note note-two">trust boundary?</span>
+            <span class="visual-stamp">KALAWY LAB<br />CASE 017</span>
+          </div>
+          <div class="featured-copy">
+            <div class="post-meta">
+              <span class="post-tag">Browser</span>
+              <time datetime="2026-09-24">Sep 24, 2026</time>
+              <span>14 min read</span>
+            </div>
+            <h3>When two origins share one assumption</h3>
+            <p>
+              Following a harmless-looking navigation race into an inconsistent security state —
+              and the three browser primitives that made it interesting.
+            </p>
+            <span class="card-link">Read the research <b>↗</b></span>
+          </div>
+        </a>
+      </section>
+
+      <section class="writing shell" id="writing">
+        <div class="section-heading writing-heading">
+          <div>
+            <p class="section-index">02 / WRITING</p>
+            <h2>Fresh from the lab</h2>
+          </div>
+          <div class="filter-wrap" role="group" aria-label="Filter posts">
+            <button class="filter-button active" data-filter="all" type="button">All</button>
+            <button class="filter-button" data-filter="research" type="button">Research</button>
+            <button class="filter-button" data-filter="notes" type="button">Notes</button>
+          </div>
+        </div>
+
+        <div class="post-list" aria-live="polite">
+          <article class="post-row" data-kind="research" data-search="service workers navigation cache browser">
+            <a href="article.html">
+              <div class="post-number">001</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag">Browser</span><span>Research</span></div>
+                <h3>Service workers remember more than you think</h3>
+                <p>A tour through stale registrations, replaced documents, and identity confusion.</p>
+              </div>
+              <time datetime="2026-09-04">04.09.26</time>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="post-row" data-kind="notes" data-search="source code audit reading unfamiliar code notes">
+            <a href="article.html">
+              <div class="post-number">002</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag muted">Field note</span><span>Notes</span></div>
+                <h3>How I read an unfamiliar codebase</h3>
+                <p>Five anchors that turn a large repository into a map you can actually use.</p>
+              </div>
+              <time datetime="2026-08-18">18.08.26</time>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="post-row" data-kind="research" data-search="cache poisoning normalization url web research">
+            <a href="article.html">
+              <div class="post-number">003</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag">Web</span><span>Research</span></div>
+                <h3>The URL changed. The cache key didn’t.</h3>
+                <p>Finding an exploitable gap between normalization layers at the edge.</p>
+              </div>
+              <time datetime="2026-07-29">29.07.26</time>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="post-row" data-kind="notes" data-search="fuzzing harness weekend experiment notes">
+            <a href="article.html">
+              <div class="post-number">004</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag muted">Lab log</span><span>Notes</span></div>
+                <h3>A tiny fuzzing harness for a rainy weekend</h3>
+                <p>Small inputs, useful crashes, and the shell script holding everything together.</p>
+              </div>
+              <time datetime="2026-06-11">11.06.26</time>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+        </div>
+
+        <div class="empty-state" hidden>
+          <span>¯\_(ツ)_/¯</span>
+          <p>No notes matched that search.</p>
+        </div>
+      </section>
+
+      <section class="about shell" id="about">
+        <p class="section-index">03 / ABOUT</p>
+        <div class="about-grid">
+          <h2>Not the movie genius.<br /><span>Still asks questions.</span></h2>
+          <div class="about-copy">
+            <p>
+              The name is a nod to Kalawy, the computer genius from <em>El Rahina</em>. This is my
+              corner for the messy edges between browsers, web applications, and the systems that
+              trust them—complete research, unfinished observations, and tools from the lab.
+            </p>
+            <p class="small-note">
+              If you want to compare notes, report an issue, or just say hello, my inbox is open.
+            </p>
+            <a class="button button-outline" href="mailto:hello@example.com">Say hello <span>↗</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell">
+      <div>
+        <span class="brand-mark" aria-hidden="true">ك</span>
+        <p>Breaking assumptions, documenting the pieces.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">RSS</a>
+        <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a href="mailto:hello@example.com">Email ↗</a>
+      </div>
+      <p class="copyright">© 2026 Kalawy<br />Built from plain text.</p>
+    </footer>
+
+    <dialog class="search-dialog">
+      <form method="dialog" class="search-panel">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path>
+          </svg>
+          <input type="search" placeholder="Search the notebook…" aria-label="Search posts" autocomplete="off" />
+          <button type="submit" aria-label="Close search">ESC</button>
+        </div>
+        <p>Try “browser”, “cache”, “fuzzing”, or “codebase”.</p>
+      </form>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+.article-header .back-link { justify-self: center; color: var(--muted); font-size: .82rem; }
+.article-header .back-link:hover { color: var(--ink); }
+.article-hero { max-width: 980px; padding-block: 112px 90px; text-align: center; }
+.article-hero .post-meta { justify-content: center; }
+.article-hero h1 { margin: 30px 0 25px; font-size: clamp(3.4rem, 8vw, 7.5rem); font-weight: 500; letter-spacing: -.075em; line-height: .9; }
+.article-hero > p { max-width: 640px; margin: 0 auto; color: var(--muted); font-size: 1.2rem; line-height: 1.6; }
+.article-byline { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 42px; text-align: left; }
+.article-byline b, .article-byline small { display: block; }
+.article-byline b { font-size: .8rem; }
+.article-byline small { margin-top: 3px; color: var(--muted); font: .62rem var(--mono); }
+.article-rule { height: 1px; background: var(--line); }
+.article-layout { display: grid; grid-template-columns: 170px minmax(0, 700px) 170px; justify-content: space-between; gap: 46px; padding-block: 95px 130px; }
+.article-toc { position: sticky; top: 35px; align-self: start; display: flex; flex-direction: column; gap: 14px; }
+.article-toc p, .article-side-note span { margin: 0 0 10px; color: var(--faint); font: .62rem var(--mono); letter-spacing: .08em; }
+.article-toc a { padding-left: 12px; border-left: 1px solid var(--line); color: var(--muted); font-size: .74rem; }
+.article-toc a:hover, .article-toc a.active { border-color: var(--accent); color: var(--ink); }
+.article-side-note { align-self: start; padding: 16px; border-top: 1px solid var(--accent); color: var(--muted); font-size: .72rem; line-height: 1.55; }
+.article-side-note p { margin: 0; }
+.article-body { font-size: 1.04rem; line-height: 1.85; }
+.article-body .lede { margin-top: 0; color: var(--ink); font-size: 1.35rem; line-height: 1.65; }
+.article-body h2 { scroll-margin-top: 30px; margin: 75px 0 18px; font-size: 2.15rem; font-weight: 500; letter-spacing: -.045em; }
+.article-body p { color: color-mix(in srgb, var(--ink), var(--muted) 20%); }
+.article-body ul { padding-left: 22px; }
+.article-body li { margin-block: 9px; padding-left: 7px; }
+.callout { display: grid; grid-template-columns: 90px 1fr; gap: 20px; margin: 42px 0; padding: 22px; border: 1px solid var(--line); background: var(--surface); }
+.callout span { padding-top: 4px; color: var(--accent); font: .62rem var(--mono); }
+.callout p { margin: 0; font-size: .9rem; }
+pre { position: relative; overflow-x: auto; margin: 38px 0; padding: 28px; border: 1px solid var(--line); background: var(--surface); font: .8rem/1.8 var(--mono); }
+.copy-code { position: absolute; top: 10px; right: 10px; padding: 5px 8px; border: 1px solid var(--line); color: var(--muted); background: var(--bg); font: .56rem var(--mono); cursor: pointer; }
+blockquote { margin: 45px 0; padding: 7px 0 7px 28px; border-left: 2px solid var(--accent); font-size: 1.5rem; line-height: 1.5; letter-spacing: -.025em; }
+.article-end { margin-top: 80px; padding-top: 25px; border-top: 1px solid var(--line); color: var(--muted); }
+.article-end span { color: var(--accent); font: .65rem var(--mono); }
+.article-end p { font-size: .82rem; }
+.article-footer { min-height: 150px; grid-template-columns: 1fr auto; font: .75rem var(--mono); }
+@media (max-width: 1020px) { .article-layout { grid-template-columns: 150px minmax(0, 680px); justify-content: center; } .article-side-note { display: none; } }
+@media (max-width: 750px) { .article-header .back-link { position: absolute; top: 90px; left: 18px; } .article-hero { width: calc(100% - 44px); padding-top: 110px; } .article-hero h1 { font-size: clamp(2.4rem, 10.5vw, 3.25rem); } .article-hero > p { font-size: 1rem; } .article-hero .post-meta { gap: 7px; font-size: .57rem; } .article-hero .post-meta > * + *::before { margin-right: 7px; } .article-layout { width: calc(100% - 44px); grid-template-columns: minmax(0, 1fr); padding-top: 65px; } .article-toc { display: none; } .article-body { width: 100%; max-width: calc(100vw - 44px); min-width: 0; overflow-wrap: break-word; font-size: .96rem; } .article-body .lede { font-size: 1.16rem; } .callout { grid-template-columns: 1fr; gap: 6px; } }
