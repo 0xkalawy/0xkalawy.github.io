@@ -12,8 +12,9 @@
 .article-layout { display: grid; grid-template-columns: 170px minmax(0, 700px) 170px; justify-content: space-between; gap: 46px; padding-block: 95px 130px; }
 .article-toc { position: sticky; top: 35px; align-self: start; display: flex; flex-direction: column; gap: 14px; }
 .article-toc p, .article-side-note span { margin: 0 0 10px; color: var(--faint); font: .62rem var(--mono); letter-spacing: .08em; }
-.article-toc a { padding-left: 12px; border-left: 1px solid var(--line); color: var(--muted); font-size: .74rem; }
+.article-toc a { padding-left: 12px; border-left: 1px solid var(--line); color: var(--muted); font-size: .74rem; transition: color 160ms ease, border-color 160ms ease, transform 160ms ease; }
 .article-toc a:hover, .article-toc a.active { border-color: var(--accent); color: var(--ink); }
+.article-toc a.active { transform: translateX(4px); }
 .article-side-note { align-self: start; padding: 16px; border-top: 1px solid var(--accent); color: var(--muted); font-size: .72rem; line-height: 1.55; }
 .article-side-note p { margin: 0; }
 .article-body { font-size: 1.04rem; line-height: 1.85; }

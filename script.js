@@ -93,3 +93,45 @@ const sectionObserver = new IntersectionObserver(
 );
 
 observedSections.forEach((section) => sectionObserver.observe(section));
+
+const articleTocLinks = [...document.querySelectorAll(".article-toc a[href^='#']")];
+const articleSections = articleTocLinks
+  .map((link) => document.querySelector(link.hash))
+  .filter(Boolean);
+
+function updateArticleToc() {
+  if (!articleSections.length) return;
+
+  const readingLine = Math.min(220, window.innerHeight * 0.3);
+  let currentSection = articleSections[0];
+
+  articleSections.forEach((section) => {
+    if (section.getBoundingClientRect().top <= readingLine) currentSection = section;
+  });
+
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+    currentSection = articleSections.at(-1);
+  }
+
+  articleTocLinks.forEach((link) => {
+    const isCurrent = link.hash === `#${currentSection.id}`;
+    link.classList.toggle("active", isCurrent);
+    if (isCurrent) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+let articleTocFrame;
+function queueArticleTocUpdate() {
+  if (articleTocFrame) return;
+  articleTocFrame = requestAnimationFrame(() => {
+    updateArticleToc();
+    articleTocFrame = null;
+  });
+}
+
+if (articleSections.length) {
+  updateArticleToc();
+  window.addEventListener("scroll", queueArticleTocUpdate, { passive: true });
+  window.addEventListener("resize", queueArticleTocUpdate);
+}
