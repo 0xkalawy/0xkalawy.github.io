@@ -65,7 +65,12 @@ done
 <p>Btw the visualization did not solve this chall for me. I just wanted to share a trick that might be new to a lot of readers.</p>
 <h2 id="introduction">Introduction</h2>
 <p>Let&#39;s start by following the flag. At container startup, Docker Compose injects it through the <code>FLAG</code> environment variable. The startup command runs the Prisma seed before launching the server, and <code>prisma/seed.js</code> copies the value into the <code>description</code> of product <code>1001</code>, <strong>Warranty Extension</strong>. That product is then stored in SQLite with <code>listed: false</code>.</p>
-<p><img src="assets/posts/northstar-player/flag-state-machine.svg" alt="FLAG residency and normal access boundaries"></p>
+<figure class="diagram-frame">
+  <a href="assets/posts/northstar-player/flag-state-machine.svg" target="_blank" rel="noreferrer">
+    <img src="assets/posts/northstar-player/flag-state-machine.svg" alt="FLAG residency and normal access boundaries" loading="lazy">
+  </a>
+  <figcaption><span>Northstar data flow</span><span>Open full size ↗</span></figcaption>
+</figure>
 <p>From here, we have two ideas: attack the persistent copy in SQLite, or catch the flag in memory while it moves from the environment into the database. The second idea sounds cool, but we have no interface to the server during that transfer, the HTTP server starts only after seeding finishes. The server process still inherits the environment, but <code>server.js</code> never reads <code>process.env.FLAG</code>, so there is no direct HTTP data-flow path to it either.</p>
 <h3>Flag locations and attack surface</h3>
 <p>That leaves the database copy as our practical target. To keep the attack surface clear, the flag lives in two relevant places:</p>
