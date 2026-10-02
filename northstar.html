@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071821" />
+    <meta name="description" content="Northstar CATF 2026 Finals race condition writeup by Mohamed Wagdy." />
+    <title>When the loser takes it all | Mohamed Wagdy</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="article.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article">Skip to article</a>
+    <header class="site-header shell article-header">
+      <a class="brand" href="index.html" aria-label="Mohamed Wagdy, home"><span class="brand-mark">ك</span><span class="brand-name">KALAWY.LAB <small>كلاوي</small></span></a>
+      <a class="back-link" href="index.html#writing">← All writing</a>
+      <div class="header-actions">
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch to light theme">
+          <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></svg>
+          <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.2A8 8 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2Z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="article">
+      <header class="article-hero shell northstar-hero">
+        <div class="post-meta"><span class="post-tag">Race Condition</span><span>CATF 2026 Finals</span><time datetime="2026-10-02">Oct 2, 2026</time><span>13 min read</span></div>
+        <h1>When the loser<br />takes it all</h1>
+        <p>Northstar CATF 2026 Finals</p>
+        <div class="article-byline"><span class="author-avatar"><img src="assets/kalawy-mascot.png" alt="" /></span><div><b>Mohamed Wagdy</b><small>Vulnerability Researcher</small></div></div>
+      </header>
+
+      <div class="article-rule"></div>
+
+      <div class="article-layout shell northstar-layout">
+        <aside class="article-toc">
+          <p>ON THIS PAGE</p>
+          <a class="active" href="#tldr">TL;DR</a>
+          <a href="#takeaway">Takeaway</a>
+          <a href="#introduction">Introduction</a>
+          <a href="#solver">Solver</a>
+          <a href="#fix">Fix</a>
+        </aside>
+
+        <article class="article-body northstar-body">
+<blockquote>
+<p>Heads-up: this is more than a solve, it includes the full thought process. In the AI era, you can read it, challenge it, or feed it to your agent as a skill.</p>
+</blockquote>
+<h2 id="tldr">TL;DR</h2>
+<p>We are going to abuse a race condition and a <code>prisma.findFirst()</code> edge case inside a tiny timing window created by table relations.</p>
+<h2 id="takeaway">Takeaway</h2>
+<p>When I start a simple code review, I like to visualize the code before getting lost in it. For a quick pass, I would go with <code>Joern</code>; when I need deeper analysis and proper taint tracking, I would reach for CodeQL. Here is how I generated Joern&#39;s raw per-function PDGs:</p>
+<pre><code class="language-bash">joern-parse ./server.js --output cpg.bin
+joern-export --repr pdg --format dot --out joern-graphs cpg.bin
+mkdir -p joern-images
+for graph in joern-graphs/*.dot; do
+  dot -Tsvg &quot;$graph&quot; -o &quot;joern-images/$(basename &quot;${graph%.dot}&quot;).svg&quot;
+done
+</code></pre>
+<blockquote>
+<p>You can use the same approach on a large codebase, but split it into smaller targets first or the output will quickly turn into graph soup.</p>
+</blockquote>
+<p>Btw the visualization did not solve this chall for me. I just wanted to share a trick that might be new to a lot of readers.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Let&#39;s start by following the flag. At container startup, Docker Compose injects it through the <code>FLAG</code> environment variable. The startup command runs the Prisma seed before launching the server, and <code>prisma/seed.js</code> copies the value into the <code>description</code> of product <code>1001</code>, <strong>Warranty Extension</strong>. That product is then stored in SQLite with <code>listed: false</code>.</p>
+<p><img src="assets/posts/northstar-player/flag-state-machine.svg" alt="FLAG residency and normal access boundaries"></p>
+<p>From here, we have two ideas: attack the persistent copy in SQLite, or catch the flag in memory while it moves from the environment into the database. The second idea sounds cool, but we have no interface to the server during that transfer, the HTTP server starts only after seeding finishes. The server process still inherits the environment, but <code>server.js</code> never reads <code>process.env.FLAG</code>, so there is no direct HTTP data-flow path to it either.</p>
+<h3>Flag locations and attack surface</h3>
+<p>That leaves the database copy as our practical target. To keep the attack surface clear, the flag lives in two relevant places:</p>
+<ol>
+<li><strong>Environment variable:</strong> we might reach it through an information disclosure, an arbitrary local-file read/LFI that can expose a process environment, or RCE.</li>
+<li><strong>Database:</strong> the flag sits in the hidden product&#39;s <code>description</code>. Here I would look for unsafe raw SQL, broken access control, incorrect query construction, ORM edge cases, and races between related operations.</li>
+</ol>
+<p>I will leave the environment path for your own research and follow the database path here. The application does not use raw SQL, so classic SQL injection is not our immediate direction.</p>
+<p>Let&#39;s ignore the database functions whose parameters are not dynamically evaluated from request-controlled input or mutable application state. We cannot steer them directly through the HTTP interface, so staring at them will not get us far. Instead, I care about calls whose <code>where</code>, <code>data</code>, or relation fields depend on values such as <code>productId</code>, the decoded <code>passId</code>, or records returned by earlier queries. I will still keep static-looking writes in scope when they can change shared state that a later dynamic query reads.</p>
+<p>After that bit of ignorance, <code>product.findMany()</code> in <code>GET /products</code> drops out because both its filter and selected fields are static. Our shortlist becomes:</p>
+<ul>
+<li><code>product.findFirst()</code>, whose filter receives either the request&#39;s <code>productId</code> or <code>details.cartItem?.productId</code> from an earlier relational query.</li>
+<li><code>checkoutPass.findUnique()</code>, whose filter receives the JWT&#39;s decoded <code>passId</code>. Prisma replaced the old <code>findOne</code> operation with <a href="https://docs.prisma.io/docs/orm/v6/reference/prisma-client-reference#findunique"><code>findUnique</code></a> in version 2.12.0.</li>
+<li><code>checkoutPass.create()</code>, which creates a pass and related cart item using the selected <code>product.id</code>.</li>
+<li><code>cartItem.deleteMany()</code>, which deletes a relation using <code>details.cartItem.id</code>.</li>
+<li><code>redemptionLog.create()</code> and <code>checkoutPass.update()</code>, which both use the decoded <code>passId</code> and mutate shared redemption state.</li>
+</ul>
+<p>Do not throw away the writes just because they do not return the flag themselves. Changing one related record can change what a later read sees. Under normal behavior, the application protects the flag-bearing row: <code>GET /products</code> returns only listed products, while <code>POST /cart</code> requires both the requested ID and <code>listed: true</code>. So I am going to follow product IDs, checkout passes, and related records across every Prisma read and write until something reaches the response.</p>
+<p>The goal is simple: make one of those operations retrieve and serialize the hidden product&#39;s flag-bearing <code>description</code>. The diagram stops at that objective on purpose; now let&#39;s figure out how to reach it.</p>
+<h3>Fuzzing the Prisma boundary with AFL++</h3>
+<p>For me, the next move is to fuzz each of those functions for edge cases while reading its documentation. That second part matters because I need to know whether I found a vulnerability or just normal ORM behavior. Also, a crash-only campaign is not enough here: the interesting failure may return a perfectly valid but unauthorized row without crashing Node.js. So the harness defines security rules and calls <code>process.abort()</code> when one is broken, which gives AFL++ something it can save as a crash.</p>
+<p>These are the rules I care about:</p>
+<ul>
+<li>A lookup must not return hidden product <code>1001</code> unless that ID was explicitly requested.</li>
+<li><code>findUnique</code> must not return a checkout pass with a different ID.</li>
+<li>Nested <code>create</code> must preserve the requested product relationship.</li>
+<li>Deleting a cart item must leave the optional checkout-pass relation in the expected state.</li>
+<li>Logs and updates must remain attached to the requested <code>passId</code>.</li>
+<li>A checkout pass created for a visible product must never resolve to an unlisted product after a sequence of relation changes.</li>
+</ul>
+<p>A normal AFL++ compiler cannot instrument JavaScript source directly. To get feedback from Node/V8, run the target through AFL++ <a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/frida_mode/README.md">FRIDA mode</a> with <code>-O</code>, then enable JIT-generated-code instrumentation with <a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/env_variables.md"><code>AFL_FRIDA_INST_JIT=1</code></a>. Before burning an hour on a campaign, make sure your AFL++ build actually includes FRIDA support.</p>
+<p>I would smoke-test one harness target first:</p>
+<pre><code class="language-bash">FUZZ_TARGET=findFirst \
+  node fuzz/prisma-harness.js fuzz/corpus/seed
+</code></pre>
+<p>Once coverage looks sane, run a separate time-bounded campaign for each target:</p>
+<pre><code class="language-bash">for target in findFirst findUnique create deleteMany createLog update sequence; do
+  FUZZ_TARGET=&quot;$target&quot; \
+  AFL_FRIDA_INST_JIT=1 \
+    afl-fuzz -O -V 3600 -m 0 -t 5000+ \
+      -i fuzz/corpus \
+      -o &quot;fuzz/out/$target&quot; \
+      -x fuzz/afl-prisma.dict \
+      -- node fuzz/prisma-harness.js @@
+done
+</code></pre>
+<p>The per-function campaigns explore malformed IDs, missing values, weird types, absent relations, and constraint failures. Do not skip <code>sequence</code>: a read can be safe on its own and become dangerous only after a write changes a related row. Finally, replay every AFL++ finding and compare it with Prisma&#39;s documentation. A validation error or documented behavior is not automatically a vulnerability; a reproducible break in one of our security rules is what deserves attention.</p>
+<h3>When the docs beat the fuzzer</h3>
+<p>The fuzzer did not hand me anything useful this time, but reading the docs did:</p>
+<p><img src="assets/posts/northstar-player/prisma-findfirst.png" alt="Undefined in findFirst"></p>
+<p>Here is the fun part: in this Prisma version, a field set to <code>undefined</code> is omitted from the query. If <code>where: { id: value }</code> receives <code>undefined</code>, <code>findFirst()</code> stops filtering by <code>id</code>. Our query also has <code>orderBy: { id: &quot;asc&quot; }</code>, so it returns the lowest-ID product,product <code>1001</code>, the one holding our flag.</p>
+<p>So the real question is: how can we make <code>details.cartItem?.productId</code> evaluate to <code>undefined</code>?</p>
+<p><img src="assets/posts/northstar-player/is-that-a-question.jpg" alt="Is that a question?"></p>
+<p>Is that even a question, ya 3mad?</p>
+<p>Optional chaining gives us <code>undefined</code> when <code>details.cartItem</code> is <code>null</code>. So we need to point to either: Unexistent entry or a delted pne. Pointing the relation at a row that does not exist is not the easy route because the database enforces the foreign key. Deletion is much more fun: the application already deletes the <code>CartItem</code> after redemption, and the schema&#39;s <code>onDelete: SetNull</code> behavior clears the optional relation on <code>CheckoutPass</code>. All we need is another request reading that relation right after the deletion.</p>
+<p><img src="assets/posts/northstar-player/race.gif" alt="Race"></p>
+<p>Yep, it is a race condition, but firing two random requests is not enough to make it reliable.</p>
+<p><img src="assets/posts/northstar-player/what.gif" alt="what?"></p>
+<p>The useful interleaving looks like this:</p>
+<ol>
+<li>Two requests redeem the same JWT and both read <code>checkoutPass.used === false</code>.</li>
+<li>Request A reads the related cart item and deletes it.</li>
+<li>Request B has already passed the <code>used</code> check, but reads the details after the deletion, so <code>details.cartItem</code> is now <code>null</code>.</li>
+<li><code>details.cartItem?.productId</code> becomes <code>undefined</code>; Prisma omits the <code>id</code> filter; <code>findFirst()</code> returns product <code>1001</code>.</li>
+<li>Request B serializes that product, including its flag-bearing <code>description</code>, into the response.</li>
+</ol>
+<p>The window is tiny. In my tests, the useful interleaving was around 1 ms locally, while remote request-arrival jitter was roughly 30-40 ms. Those are observations from my setup, not guaranteed timings. Sometimes network jitter lands the requests in exactly the right order for free, and that is where <strong>the poorer takes it all</strong>.</p>
+<p>With unsynchronized requests, I saw roughly a 1% success rate. Releasing the workers together and tuning the timing pushed it close to 99% in my environment; your numbers will depend on scheduling, database latency, and network conditions.</p>
+<h2 id="solver">Solver</h2>
+<pre><code class="language-python">#!/usr/bin/env python3
+
+import json
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.request import Request, urlopen
+
+
+def post(path, body):
+    request = Request(
+        f&quot;http://127.0.0.1:18080{path}&quot;,
+        data=json.dumps(body).encode(),
+        headers={&quot;Content-Type&quot;: &quot;application/json&quot;},
+        method=&quot;POST&quot;,
+    )
+    return urlopen(request, timeout=15).read().decode()
+
+
+def main():
+    for attempt in range(1, 6):
+        print(f&quot;[*] Race attempt {attempt}/5&quot;)
+        token = json.loads(post(&quot;/cart&quot;, {&quot;productId&quot;: 2001}))[&quot;token&quot;]
+
+        barrier = threading.Barrier(20)
+
+        def redeem():
+            barrier.wait()
+            return post(&quot;/redeem&quot;, {&quot;token&quot;: token})
+
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            futures = [executor.submit(redeem) for _ in range(20)]
+            for future in as_completed(futures):
+                response = future.result()
+                if &quot;CATF{&quot; in response:
+                    print(response)
+                    return
+
+    print(&quot;[-] Race failed.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<h2 id="fix">Fix</h2>
+<p>Okay, how do we kill the bug? There are two jobs: never let an undefined product ID reach Prisma, and let only one request redeem a pass. The <code>undefined</code> behavior is documented ORM behavior; the actual bug is that our application allows that value to broaden a security-sensitive query. Depending on the database, we could solve the race with a lock or another atomic primitive. In this patch, I use a transaction plus a conditional update.</p>
+<p><strong>For the AppSec nerds:</strong> wrapping the old code in a transaction is not magic. If we keep “read <code>used</code>, do some work, then update it later,” two requests may still make their decision from stale state. I want the database to choose one winner in a single conditional write. Here, <code>updateMany()</code> acts like compare-and-set: only the request that changes <code>used: false</code> to <code>used: true</code> gets <code>count === 1</code>. Everybody else gets <code>0</code> and goes home.</p>
+<pre><code class="language-diff">@@
+-    const checkoutPass = await prisma.checkoutPass.findUnique({
+-      where: { id: decoded.passId },
+-      select: { used: true },
+-    });
+-
+-    if (!checkoutPass) {
+-      return response.status(404).json({ error: &quot;Checkout pass not found&quot; });
+-    }
+-
+-    if (checkoutPass.used) {
+-      return response.status(409).json({ error: &quot;Checkout pass already used&quot; });
+-    }
+-
+-    const details = await prisma.checkoutPass.findUnique({
+-      where: { id: decoded.passId },
+-      select: {
+-        cartItem: {
+-          select: { id: true, productId: true },
+-        },
+-      },
+-    });
+-
+-    const product = await prisma.product.findFirst({
+-      where: { id: details.cartItem?.productId },
+-      select: { id: true, name: true, description: true, priceCents: true },
+-      orderBy: { id: &quot;asc&quot; },
+-    });
+-
+-    if (details.cartItem) {
+-      await prisma.cartItem.deleteMany({
+-        where: { id: details.cartItem.id },
+-      });
+-    }
+-
+-    await prisma.redemptionLog.create({
+-      data: { passId: decoded.passId },
+-    });
+-
+-    await prisma.checkoutPass.update({
+-      where: { id: decoded.passId },
+-      data: { used: true },
+-    });
+-
+-    return response.json({ product });
++    const result = await prisma.$transaction(async (tx) =&gt; {
++      const details = await tx.checkoutPass.findUnique({
++        where: { id: decoded.passId },
++        select: {
++          used: true,
++          cartItem: {
++            select: { id: true, productId: true },
++          },
++        },
++      });
++
++      if (!details || details.used) {
++        return { status: 409, error: &quot;Checkout pass is invalid or already used&quot; };
++      }
++
++      // Fail closed: never pass undefined into the product filter.
++      if (!details.cartItem) {
++        return { status: 409, error: &quot;Checkout pass has no cart item&quot; };
++      }
++
++      const product = await tx.product.findFirst({
++        where: {
++          id: details.cartItem.productId,
++          listed: true,
++        },
++        select: { id: true, name: true, description: true, priceCents: true },
++      });
++
++      if (!product) {
++        return { status: 404, error: &quot;Product not found&quot; };
++      }
++
++      // The reads above only validate input; this write decides the winner.
++      const claim = await tx.checkoutPass.updateMany({
++        where: { id: decoded.passId, used: false },
++        data: { used: true },
++      });
++
++      if (claim.count !== 1) {
++        return { status: 409, error: &quot;Checkout pass is invalid or already used&quot; };
++      }
++
++      await tx.cartItem.delete({
++        where: { id: details.cartItem.id },
++      });
++
++      await tx.redemptionLog.create({
++        data: { passId: decoded.passId },
++      });
++
++      return { product };
++    });
++
++    if (result.error) {
++      return response.status(result.status).json({ error: result.error });
++    }
++
++    return response.json({ product: result.product });
+</code></pre>
+<p>That closes both halves of the bug. The conditional update kills the check-then-act race, while the explicit <code>cartItem</code> guard and <code>listed: true</code> filter stop <code>undefined</code> from broadening the product query. Every state change stays in the same transaction, so an unexpected exception rolls the claim back instead of leaving us with a half-redeemed pass.</p>
+
+          <div class="article-end"><span>EOF</span><p>Thanks for reading. If you found a mistake, please send me a note.</p></div>
+        </article>
+
+        <aside class="article-side-note"><span>CATF 2026</span><p>Northstar Player challenge from the finals.</p></aside>
+      </div>
+    </main>
+
+    <footer class="site-footer shell article-footer">
+      <a href="index.html#writing">← Back to all writing</a>
+      <p>© 2026 Mohamed Wagdy</p>
+    </footer>
+
+    <script>
+      document.querySelectorAll(".northstar-body pre").forEach((block) => {
+        const button = document.createElement("button");
+        button.className = "copy-code";
+        button.type = "button";
+        button.textContent = "COPY";
+        button.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(block.querySelector("code").innerText);
+          button.textContent = "COPIED";
+          setTimeout(() => { button.textContent = "COPY"; }, 1200);
+        });
+        block.append(button);
+      });
+    </script>
+  </body>
+</html>

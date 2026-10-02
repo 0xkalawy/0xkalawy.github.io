@@ -80,10 +80,10 @@
 
       <section class="signal-strip" aria-label="Research topics">
         <div class="signal-track">
-          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
-          <span>REVERSE ENGINEERING</span><i>●</i>
-          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
-          <span>REVERSE ENGINEERING</span><i>●</i>
+          <span>WEB SECURITY</span><i>●</i><span>RACE CONDITIONS</span><i>●</i>
+          <span>MOBILE SECURITY</span><i>●</i>
+          <span>WEB SECURITY</span><i>●</i><span>RACE CONDITIONS</span><i>●</i>
+          <span>MOBILE SECURITY</span><i>●</i>
         </div>
       </section>
 
@@ -91,12 +91,12 @@
         <div class="section-heading">
           <div>
             <p class="section-index">01 / FEATURED</p>
-            <h2>Case file of the month</h2>
+            <h2>Latest writeup</h2>
           </div>
-          <span class="entry-count">01 deep dive</span>
+          <span class="entry-count">01 writeup</span>
         </div>
 
-        <a class="featured-card" href="article.html">
+        <a class="featured-card" href="northstar.html">
           <div class="featured-visual" aria-hidden="true">
             <div class="grid-paper"></div>
             <div class="diagram-node node-a">A</div>
@@ -105,22 +105,22 @@
               <path class="diagram-path path-one" d="M150 190 C250 60 350 300 475 150"></path>
               <path class="diagram-path path-two" d="M150 190 C290 250 340 80 475 150"></path>
             </svg>
-            <span class="visual-note note-one">origin_a</span>
-            <span class="visual-note note-two">trust boundary?</span>
-            <span class="visual-stamp">KALAWY LAB<br />CASE 017</span>
+            <span class="visual-note note-one">checkoutPass.used</span>
+            <span class="visual-note note-two">1 ms window</span>
+            <span class="visual-stamp">NORTHSTAR<br />CATF 2026</span>
           </div>
           <div class="featured-copy">
             <div class="post-meta">
-              <span class="post-tag">Browser</span>
-              <time datetime="2026-09-24">Sep 24, 2026</time>
-              <span>14 min read</span>
+              <span class="post-tag">Race Condition</span>
+              <time datetime="2026-10-02">Oct 2, 2026</time>
+              <span>13 min read</span>
             </div>
-            <h3>When two origins share one assumption</h3>
+            <h3>When the loser takes it all</h3>
             <p>
-              Following a harmless-looking navigation race into an inconsistent security state —
-              and the three browser primitives that made it interesting.
+              A race condition and a Prisma findFirst edge case inside a tiny timing window created
+              by table relations.
             </p>
-            <span class="card-link">Read the research <b>↗</b></span>
+            <span class="card-link">Read the writeup <b>↗</b></span>
           </div>
         </a>
       </section>
@@ -129,64 +129,20 @@
         <div class="section-heading writing-heading">
           <div>
             <p class="section-index">02 / WRITING</p>
-            <h2>Fresh from the lab</h2>
-          </div>
-          <div class="filter-wrap" role="group" aria-label="Filter posts">
-            <button class="filter-button active" data-filter="all" type="button">All</button>
-            <button class="filter-button" data-filter="research" type="button">Research</button>
-            <button class="filter-button" data-filter="notes" type="button">Notes</button>
+            <h2>Writing</h2>
           </div>
         </div>
 
         <div class="post-list" aria-live="polite">
-          <article class="post-row" data-kind="research" data-search="service workers navigation cache browser">
-            <a href="article.html">
+          <article class="post-row" data-kind="research" data-search="northstar catf race condition prisma web security">
+            <a href="northstar.html">
               <div class="post-number">001</div>
               <div class="post-main">
-                <div class="post-meta"><span class="post-tag">Browser</span><span>Research</span></div>
-                <h3>Service workers remember more than you think</h3>
-                <p>A tour through stale registrations, replaced documents, and identity confusion.</p>
+                <div class="post-meta"><span class="post-tag">Race Condition</span><span>Writeup</span></div>
+                <h3>When the loser takes it all</h3>
+                <p>Northstar Player from the CATF 2026 Finals.</p>
               </div>
-              <time datetime="2026-09-04">04.09.26</time>
-              <span class="row-arrow" aria-hidden="true">↗</span>
-            </a>
-          </article>
-
-          <article class="post-row" data-kind="notes" data-search="source code audit reading unfamiliar code notes">
-            <a href="article.html">
-              <div class="post-number">002</div>
-              <div class="post-main">
-                <div class="post-meta"><span class="post-tag muted">Field note</span><span>Notes</span></div>
-                <h3>How I read an unfamiliar codebase</h3>
-                <p>Five anchors that turn a large repository into a map you can actually use.</p>
-              </div>
-              <time datetime="2026-08-18">18.08.26</time>
-              <span class="row-arrow" aria-hidden="true">↗</span>
-            </a>
-          </article>
-
-          <article class="post-row" data-kind="research" data-search="cache poisoning normalization url web research">
-            <a href="article.html">
-              <div class="post-number">003</div>
-              <div class="post-main">
-                <div class="post-meta"><span class="post-tag">Web</span><span>Research</span></div>
-                <h3>The URL changed. The cache key didn’t.</h3>
-                <p>Finding an exploitable gap between normalization layers at the edge.</p>
-              </div>
-              <time datetime="2026-07-29">29.07.26</time>
-              <span class="row-arrow" aria-hidden="true">↗</span>
-            </a>
-          </article>
-
-          <article class="post-row" data-kind="notes" data-search="fuzzing harness weekend experiment notes">
-            <a href="article.html">
-              <div class="post-number">004</div>
-              <div class="post-main">
-                <div class="post-meta"><span class="post-tag muted">Lab log</span><span>Notes</span></div>
-                <h3>A tiny fuzzing harness for a rainy weekend</h3>
-                <p>Small inputs, useful crashes, and the shell script holding everything together.</p>
-              </div>
-              <time datetime="2026-06-11">11.06.26</time>
+              <time datetime="2026-10-02">02.10.26</time>
               <span class="row-arrow" aria-hidden="true">↗</span>
             </a>
           </article>
@@ -240,7 +196,7 @@
           <input type="search" placeholder="Search the notebook…" aria-label="Search posts" autocomplete="off" />
           <button type="submit" aria-label="Close search">ESC</button>
         </div>
-        <p>Try “browser”, “cache”, “fuzzing”, or “codebase”.</p>
+        <p>Try “Northstar”, “race”, “Prisma”, or “CATF”.</p>
       </form>
     </dialog>
   </body>

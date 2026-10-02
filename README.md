@@ -14,11 +14,11 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
-## Customize
+## Content
 
-- Replace the placeholder bio, location, email, and social links in `index.html`.
-- Replace the example article data and point each row at its final post.
-- Adjust the visual palette in the CSS variables at the top of `styles.css`.
-- `article.html` demonstrates the long-form research layout.
+- `northstar.html` publishes the Northstar Player writeup.
+- `posts/northstar-player/Write-up.md` keeps the Markdown source.
+- `assets/posts/northstar-player/` contains the writeup media.
+- The visual palette lives in the CSS variables at the top of `styles.css`.
 
 The site has no build step and can be published directly through GitHub Pages.

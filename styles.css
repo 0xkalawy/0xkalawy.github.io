@@ -392,7 +392,7 @@ svg { display: block; }
   .copyright { grid-column: 1; }
 }
 
-/* Kalawy identity — bright case-file colors, comic framing, and a film-inspired mascot. */
+/* Kalawy identity with bright case file colors, comic framing, and a film inspired mascot. */
 .site-header {
   min-height: 82px;
   border-bottom: 0;

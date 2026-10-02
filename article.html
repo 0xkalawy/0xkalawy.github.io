@@ -1,91 +1,13 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#071821" />
-    <meta name="description" content="Vulnerability research by Mohamed Wagdy." />
-    <title>When two origins share one assumption | Mohamed Wagdy</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="article.css" />
-    <script src="script.js" defer></script>
+    <meta http-equiv="refresh" content="0; url=northstar.html" />
+    <link rel="canonical" href="northstar.html" />
+    <title>When the loser takes it all | Mohamed Wagdy</title>
   </head>
   <body>
-    <a class="skip-link" href="#article">Skip to article</a>
-    <header class="site-header shell article-header">
-      <a class="brand" href="index.html" aria-label="Mohamed Wagdy, home"><span class="brand-mark">ك</span><span class="brand-name">KALAWY.LAB <small>كلاوي</small></span></a>
-      <a class="back-link" href="index.html#writing">← All writing</a>
-      <div class="header-actions">
-        <button class="icon-button theme-toggle" type="button" aria-label="Switch to light theme">
-          <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></svg>
-          <svg class="moon" viewBox="0 0 24 24"><path d="M20 15.2A8 8 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2Z"></path></svg>
-        </button>
-      </div>
-    </header>
-
-    <main id="article">
-      <header class="article-hero shell">
-        <div class="post-meta"><span class="post-tag">Browser</span><time datetime="2026-09-24">Sep 24, 2026</time><span>14 min read</span></div>
-        <h1>When two<br />origins share<br />one assumption</h1>
-        <p>Following a harmless-looking navigation race into an inconsistent security state.</p>
-        <div class="article-byline"><span class="author-avatar"><img src="assets/kalawy-mascot.png" alt="" /></span><div><b>Mohamed Wagdy</b><small>Vulnerability Researcher</small></div></div>
-      </header>
-
-      <div class="article-rule"></div>
-
-      <div class="article-layout shell">
-        <aside class="article-toc">
-          <p>ON THIS PAGE</p>
-          <a class="active" href="#setup">The setup</a>
-          <a href="#assumption">The assumption</a>
-          <a href="#trace">Tracing the state</a>
-          <a href="#takeaways">Takeaways</a>
-        </aside>
-
-        <article class="article-body">
-          <p class="lede">Browsers are very good at maintaining boundaries. The interesting bugs often appear when two subsystems disagree about which boundary they are maintaining.</p>
-
-          <h2 id="setup">The setup</h2>
-          <p>This page is a visual prototype for long-form research. The technical story is placeholder copy, but the reading experience is real: focused measure, clear hierarchy, useful side navigation, and code that stays readable.</p>
-          <div class="callout"><span>NOTE 01</span><p>A good research post should tell the reader what was expected before explaining what went wrong.</p></div>
-
-          <h2 id="assumption">The assumption</h2>
-          <p>Imagine a document that begins a cross-origin navigation while a second subsystem still holds a reference to the old execution context. Each component behaves correctly in isolation. Their shared timeline is where the assumption becomes visible.</p>
-          <pre><code><span class="code-dim">const</span> oldOrigin = frame.contentWindow.origin;
-frame.location = target;
-
-<span class="code-coral">await</span> navigationStarted(frame);
-assert(oldOrigin !== frame.contentWindow.origin);</code><button class="copy-code" type="button">COPY</button></pre>
-
-          <h2 id="trace">Tracing the state</h2>
-          <p>The useful move was to stop treating navigation as one event. Logging each transition separately revealed a short interval where ownership had changed but one cached decision had not.</p>
-          <blockquote>Security boundaries rarely disappear. More often, two pieces of code briefly draw them in different places.</blockquote>
-          <p>The diagram from the homepage would live here at full size, followed by reproduction notes, affected versions, and the disclosure timeline.</p>
-
-          <h2 id="takeaways">Takeaways</h2>
-          <ul>
-            <li>Model transitions, not only steady states.</li>
-            <li>Record which object made each security decision.</li>
-            <li>Treat cached authority as carefully as cached data.</li>
-          </ul>
-
-          <div class="article-end"><span>EOF</span><p>Thanks for reading. If you found a mistake, please send me a note.</p></div>
-        </article>
-
-        <aside class="article-side-note"><span>DISCLOSURE</span><p>This is demonstration content for the visual prototype—not a real vulnerability report.</p></aside>
-      </div>
-    </main>
-
-    <footer class="site-footer shell article-footer"><a href="index.html#writing">← Back to all writing</a><p>© 2026 Mohamed Wagdy</p></footer>
-
-    <dialog class="search-dialog"><form method="dialog" class="search-panel"><div class="search-field"><input type="search" aria-label="Search" /><button type="submit">ESC</button></div></form></dialog>
-    <script>
-      document.querySelectorAll('.copy-code').forEach((button) => button.addEventListener('click', async () => {
-        await navigator.clipboard.writeText(button.parentElement.querySelector('code').innerText);
-        button.textContent = 'COPIED';
-        setTimeout(() => button.textContent = 'COPY', 1200);
-      }));
-    </script>
+    <p><a href="northstar.html">Read When the loser takes it all</a></p>
   </body>
 </html>
