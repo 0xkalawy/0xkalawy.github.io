@@ -27,6 +27,10 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="article.css" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-diff.min.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -70,7 +74,7 @@
 <p>We are going to abuse a race condition and a <code>prisma.findFirst()</code> edge case inside a tiny timing window created by table relations.</p>
 <h2 id="takeaway">Takeaway</h2>
 <p>When I start a simple code review, I like to visualize the code before getting lost in it. For a quick pass, I would go with <code>Joern</code>; when I need deeper analysis and proper taint tracking, I would reach for CodeQL. Here is how I generated Joern&#39;s raw per-function PDGs:</p>
-<pre><code class="language-bash">joern-parse ./server.js --output cpg.bin
+<pre data-language="Bash"><code class="language-bash">joern-parse ./server.js --output cpg.bin
 joern-export --repr pdg --format dot --out joern-graphs cpg.bin
 mkdir -p joern-images
 for graph in joern-graphs/*.dot; do
@@ -121,11 +125,11 @@ done
 </ul>
 <p>A normal AFL++ compiler cannot instrument JavaScript source directly. To get feedback from Node/V8, run the target through AFL++ <a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/frida_mode/README.md">FRIDA mode</a> with <code>-O</code>, then enable JIT-generated-code instrumentation with <a href="https://github.com/AFLplusplus/AFLplusplus/blob/stable/docs/env_variables.md"><code>AFL_FRIDA_INST_JIT=1</code></a>. Before burning an hour on a campaign, make sure your AFL++ build actually includes FRIDA support.</p>
 <p>I would smoke-test one harness target first:</p>
-<pre><code class="language-bash">FUZZ_TARGET=findFirst \
+<pre data-language="Bash"><code class="language-bash">FUZZ_TARGET=findFirst \
   node fuzz/prisma-harness.js fuzz/corpus/seed
 </code></pre>
 <p>Once coverage looks sane, run a separate time-bounded campaign for each target:</p>
-<pre><code class="language-bash">for target in findFirst findUnique create deleteMany createLog update sequence; do
+<pre data-language="Bash"><code class="language-bash">for target in findFirst findUnique create deleteMany createLog update sequence; do
   FUZZ_TARGET=&quot;$target&quot; \
   AFL_FRIDA_INST_JIT=1 \
     afl-fuzz -O -V 3600 -m 0 -t 5000+ \
@@ -158,7 +162,7 @@ done
 <p>The window is tiny. In my tests, the useful interleaving was around 1 ms locally, while remote request-arrival jitter was roughly 30-40 ms. Those are observations from my setup, not guaranteed timings. Sometimes network jitter lands the requests in exactly the right order for free, and that is where <strong>the poorer takes it all</strong>.</p>
 <p>With unsynchronized requests, I saw roughly a 1% success rate. Releasing the workers together and tuning the timing pushed it close to 99% in my environment; your numbers will depend on scheduling, database latency, and network conditions.</p>
 <h2 id="solver">Solver</h2>
-<pre><code class="language-python">#!/usr/bin/env python3
+<pre data-language="Python"><code class="language-python">#!/usr/bin/env python3
 
 import json
 import threading
@@ -204,7 +208,7 @@ if __name__ == &quot;__main__&quot;:
 <h2 id="fix">Fix</h2>
 <p>Okay, how do we kill the bug? There are two jobs: never let an undefined product ID reach Prisma, and let only one request redeem a pass. The <code>undefined</code> behavior is documented ORM behavior; the actual bug is that our application allows that value to broaden a security-sensitive query. Depending on the database, we could solve the race with a lock or another atomic primitive. In this patch, I use a transaction plus a conditional update.</p>
 <p><strong>For the AppSec nerds:</strong> wrapping the old code in a transaction is not magic. If we keep “read <code>used</code>, do some work, then update it later,” two requests may still make their decision from stale state. I want the database to choose one winner in a single conditional write. Here, <code>updateMany()</code> acts like compare-and-set: only the request that changes <code>used: false</code> to <code>used: true</code> gets <code>count === 1</code>. Everybody else gets <code>0</code> and goes home.</p>
-<pre><code class="language-diff">@@
+<pre class="diff-highlight" data-language="Diff"><code class="language-diff diff-highlight">@@
 -    const checkoutPass = await prisma.checkoutPass.findUnique({
 -      where: { id: decoded.passId },
 -      select: { used: true },
