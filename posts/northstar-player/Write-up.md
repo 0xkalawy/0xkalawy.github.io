@@ -171,66 +171,15 @@ Okay, how do we kill the bug? There are two jobs: never let an undefined product
 **For the AppSec nerds:** wrapping the old code in a transaction is not magic. If we keep “read `used`, do some work, then update it later,” two requests may still make their decision from stale state. I want the database to choose one winner in a single conditional write. Here, `updateMany()` acts like compare-and-set: only the request that changes `used: false` to `used: true` gets `count === 1`. Everybody else gets `0` and goes home.
 
 ```diff
-@@
--    const checkoutPass = await prisma.checkoutPass.findUnique({
--      where: { id: decoded.passId },
--      select: { used: true },
--    });
--
--    if (!checkoutPass) {
--      return response.status(404).json({ error: "Checkout pass not found" });
--    }
--
--    if (checkoutPass.used) {
--      return response.status(409).json({ error: "Checkout pass already used" });
--    }
--
--    const details = await prisma.checkoutPass.findUnique({
--      where: { id: decoded.passId },
--      select: {
--        cartItem: {
--          select: { id: true, productId: true },
--        },
--      },
--    });
--
+@@ Fail closed instead of broadening the product query @@
+     .
+     .
+     .
 -    const product = await prisma.product.findFirst({
 -      where: { id: details.cartItem?.productId },
--      select: { id: true, name: true, description: true, priceCents: true },
 -      orderBy: { id: "asc" },
 -    });
--
--    if (details.cartItem) {
--      await prisma.cartItem.deleteMany({
--        where: { id: details.cartItem.id },
--      });
--    }
--
--    await prisma.redemptionLog.create({
--      data: { passId: decoded.passId },
--    });
--
--    await prisma.checkoutPass.update({
--      where: { id: decoded.passId },
--      data: { used: true },
--    });
--
--    return response.json({ product });
 +    const result = await prisma.$transaction(async (tx) => {
-+      const details = await tx.checkoutPass.findUnique({
-+        where: { id: decoded.passId },
-+        select: {
-+          used: true,
-+          cartItem: {
-+            select: { id: true, productId: true },
-+          },
-+        },
-+      });
-+
-+      if (!details || details.used) {
-+        return { status: 409, error: "Checkout pass is invalid or already used" };
-+      }
-+
 +      // Fail closed: never pass undefined into the product filter.
 +      if (!details.cartItem) {
 +        return { status: 409, error: "Checkout pass has no cart item" };
@@ -241,13 +190,20 @@ Okay, how do we kill the bug? There are two jobs: never let an undefined product
 +          id: details.cartItem.productId,
 +          listed: true,
 +        },
-+        select: { id: true, name: true, description: true, priceCents: true },
 +      });
 +
 +      if (!product) {
 +        return { status: 404, error: "Product not found" };
 +      }
 +
+@@ Make one database write choose the winner @@
+       .
+       .
+       .
+-    await prisma.checkoutPass.update({
+-      where: { id: decoded.passId },
+-      data: { used: true },
+-    });
 +      // The reads above only validate input; this write decides the winner.
 +      const claim = await tx.checkoutPass.updateMany({
 +        where: { id: decoded.passId, used: false },
@@ -258,22 +214,11 @@ Okay, how do we kill the bug? There are two jobs: never let an undefined product
 +        return { status: 409, error: "Checkout pass is invalid or already used" };
 +      }
 +
-+      await tx.cartItem.delete({
-+        where: { id: details.cartItem.id },
-+      });
-+
-+      await tx.redemptionLog.create({
-+        data: { passId: decoded.passId },
-+      });
-+
+       .
+       .
+       .
 +      return { product };
 +    });
-+
-+    if (result.error) {
-+      return response.status(result.status).json({ error: result.error });
-+    }
-+
-+    return response.json({ product: result.product });
 ```
 
 That closes both halves of the bug. The conditional update kills the check-then-act race, while the explicit `cartItem` guard and `listed: true` filter stop `undefined` from broadening the product query. Every state change stays in the same transaction, so an unexpected exception rolls the claim back instead of leaving us with a half-redeemed pass.
