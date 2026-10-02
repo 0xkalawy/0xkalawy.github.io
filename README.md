@@ -1,8 +1,7 @@
-# Kalawy — security research blog prototype
+# Kalawy security research blog
 
-A build-free static prototype designed for GitHub Pages. Its visual identity is inspired by
-Kalawy, the computer-genius character from the Egyptian film *El Rahina*, with an original
-illustrated mascot in `assets/kalawy-mascot.png`.
+A static site for GitHub Pages. The name and mascot come from Kalawy in the Egyptian film
+*El Rahina*.
 
 ## Preview
 
