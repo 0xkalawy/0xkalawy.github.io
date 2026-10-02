@@ -16,9 +16,9 @@ Then visit `http://localhost:8000`.
 
 ## Content
 
-- `northstar.html` publishes the Northstar Player writeup.
+- `northstar.html` publishes the Northstar Player Write-Up.
 - `posts/northstar-player/Write-up.md` keeps the Markdown source.
-- `assets/posts/northstar-player/` contains the writeup media.
+- `assets/posts/northstar-player/` contains the Write-Up media.
 - The visual palette lives in the CSS variables at the top of `styles.css`.
 
 The site has no build step and can be published directly through GitHub Pages.
