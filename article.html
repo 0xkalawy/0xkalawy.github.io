@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#071821" />
     <meta name="description" content="A sample security research article layout." />
-    <title>When two origins share one assumption | Kalawy</title>
+    <title>When two origins share one assumption — Kalawy</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="article.css" />
@@ -28,7 +28,7 @@
       <header class="article-hero shell">
         <div class="post-meta"><span class="post-tag">Browser</span><time datetime="2026-09-24">Sep 24, 2026</time><span>14 min read</span></div>
         <h1>When two<br />origins share<br />one assumption</h1>
-        <p>A navigation test where two parts of the browser disagreed about the page origin.</p>
+        <p>Following a harmless-looking navigation race into an inconsistent security state.</p>
         <div class="article-byline"><span class="author-avatar"><img src="assets/kalawy-mascot.png" alt="" /></span><div><b>Kalawy</b><small>Security researcher</small></div></div>
       </header>
 
@@ -44,14 +44,14 @@
         </aside>
 
         <article class="article-body">
-          <p class="lede">This post looks at what happens when a frame starts navigation while another component still refers to the previous document.</p>
+          <p class="lede">Browsers are very good at maintaining boundaries. The interesting bugs often appear when two subsystems disagree about which boundary they are maintaining.</p>
 
           <h2 id="setup">The setup</h2>
-          <p>The test uses two local origins and an iframe. One page starts the navigation. The other records each state change.</p>
-          <div class="callout"><span>NOTE 01</span><p>The old document should stop receiving trusted data as soon as the navigation commits.</p></div>
+          <p>This page is a visual prototype for long-form research. The technical story is placeholder copy, but the reading experience is real: focused measure, clear hierarchy, useful side navigation, and code that stays readable.</p>
+          <div class="callout"><span>NOTE 01</span><p>A good research post should tell the reader what was expected before explaining what went wrong.</p></div>
 
           <h2 id="assumption">The assumption</h2>
-          <p>A document begins a cross origin navigation while a second component still holds a reference to the old execution context. The test checks whether that reference remains trusted.</p>
+          <p>Imagine a document that begins a cross-origin navigation while a second subsystem still holds a reference to the old execution context. Each component behaves correctly in isolation. Their shared timeline is where the assumption becomes visible.</p>
           <pre><code><span class="code-dim">const</span> oldOrigin = frame.contentWindow.origin;
 frame.location = target;
 
@@ -59,20 +59,21 @@ frame.location = target;
 assert(oldOrigin !== frame.contentWindow.origin);</code><button class="copy-code" type="button">COPY</button></pre>
 
           <h2 id="trace">Tracing the state</h2>
-          <p>I logged navigation start, document replacement and origin checks separately. One cached decision remained after ownership changed.</p>
-          <p>The complete post will include reproduction steps, affected builds and the disclosure timeline.</p>
+          <p>The useful move was to stop treating navigation as one event. Logging each transition separately revealed a short interval where ownership had changed but one cached decision had not.</p>
+          <blockquote>Security boundaries rarely disappear. More often, two pieces of code briefly draw them in different places.</blockquote>
+          <p>The diagram from the homepage would live here at full size, followed by reproduction notes, affected versions, and the disclosure timeline.</p>
 
           <h2 id="takeaways">Takeaways</h2>
           <ul>
-            <li>Log each navigation state.</li>
-            <li>Record which object makes the security decision.</li>
-            <li>Check cached permissions after ownership changes.</li>
+            <li>Model transitions, not only steady states.</li>
+            <li>Record which object made each security decision.</li>
+            <li>Treat cached authority as carefully as cached data.</li>
           </ul>
 
           <div class="article-end"><span>EOF</span><p>Thanks for reading. If you found a mistake, please send me a note.</p></div>
         </article>
 
-        <aside class="article-side-note"><span>NOTE</span><p>This page contains sample content. It is not a vulnerability report.</p></aside>
+        <aside class="article-side-note"><span>DISCLOSURE</span><p>This is demonstration content for the visual prototype—not a real vulnerability report.</p></aside>
       </div>
     </main>
 

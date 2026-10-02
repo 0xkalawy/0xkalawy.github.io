@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Kalawy's security research and notes."
+      content="Kalawy's security research, field notes, and experiments."
     />
     <meta name="theme-color" content="#071821" />
-    <title>Kalawy | Security Research</title>
+    <title>Kalawy — Security Research</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
@@ -55,7 +55,8 @@
             <div class="eyebrow"><span class="status-dot"></span> SECURITY RESEARCH · CAIRO, EG</div>
             <h1>Breaking things,<br /><em>with a straight face.</em></h1>
             <p class="hero-intro">
-              Writeups and notes about web bugs, browser behavior and tools I use while testing.
+              Practical notes on browser behavior, web vulnerabilities, and every suspicious
+              assumption that looked innocent at first.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#writing">
@@ -80,12 +81,10 @@
 
       <section class="signal-strip" aria-label="Research topics">
         <div class="signal-track">
-          <span>WEB SECURITY</span><i>●</i><span>BUG BOUNTY</span><i>●</i>
-          <span>WRITEUPS</span><i>●</i><span>NOTES</span><i>●</i>
-          <span>WEB SECURITY</span><i>●</i><span>BUG BOUNTY</span><i>●</i>
-          <span>WRITEUPS</span><i>●</i><span>NOTES</span><i>●</i>
-          <span>WEB SECURITY</span><i>●</i><span>BUG BOUNTY</span><i>●</i>
-          <span>WRITEUPS</span><i>●</i><span>NOTES</span><i>●</i>
+          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
+          <span>REVERSE ENGINEERING</span><i>●</i>
+          <span>BROWSER SECURITY</span><i>●</i><span>WEB EXPLOITATION</span><i>●</i>
+          <span>REVERSE ENGINEERING</span><i>●</i>
         </div>
       </section>
 
@@ -93,9 +92,9 @@
         <div class="section-heading">
           <div>
             <p class="section-index">01 / FEATURED</p>
-            <h2>Featured post</h2>
+            <h2>Case file of the month</h2>
           </div>
-          <span class="entry-count">01 post</span>
+          <span class="entry-count">01 deep dive</span>
         </div>
 
         <a class="featured-card" href="article.html">
@@ -119,7 +118,8 @@
             </div>
             <h3>When two origins share one assumption</h3>
             <p>
-              A navigation test where two parts of the browser disagreed about the page origin.
+              Following a harmless-looking navigation race into an inconsistent security state —
+              and the three browser primitives that made it interesting.
             </p>
             <span class="card-link">Read the research <b>↗</b></span>
           </div>
@@ -130,7 +130,7 @@
         <div class="section-heading writing-heading">
           <div>
             <p class="section-index">02 / WRITING</p>
-            <h2>Recent posts</h2>
+            <h2>Fresh from the lab</h2>
           </div>
           <div class="filter-wrap" role="group" aria-label="Filter posts">
             <button class="filter-button active" data-filter="all" type="button">All</button>
@@ -146,7 +146,7 @@
               <div class="post-main">
                 <div class="post-meta"><span class="post-tag">Browser</span><span>Research</span></div>
                 <h3>Service workers remember more than you think</h3>
-                <p>Notes on stale registrations, replaced documents and identity checks.</p>
+                <p>A tour through stale registrations, replaced documents, and identity confusion.</p>
               </div>
               <time datetime="2026-09-04">04.09.26</time>
               <span class="row-arrow" aria-hidden="true">↗</span>
@@ -159,7 +159,7 @@
               <div class="post-main">
                 <div class="post-meta"><span class="post-tag muted">Field note</span><span>Notes</span></div>
                 <h3>How I read an unfamiliar codebase</h3>
-                <p>The steps I use when I start reading a large repository.</p>
+                <p>Five anchors that turn a large repository into a map you can actually use.</p>
               </div>
               <time datetime="2026-08-18">18.08.26</time>
               <span class="row-arrow" aria-hidden="true">↗</span>
@@ -172,7 +172,7 @@
               <div class="post-main">
                 <div class="post-meta"><span class="post-tag">Web</span><span>Research</span></div>
                 <h3>The URL changed. The cache key didn’t.</h3>
-                <p>Notes on a cache key mismatch at the edge.</p>
+                <p>Finding an exploitable gap between normalization layers at the edge.</p>
               </div>
               <time datetime="2026-07-29">29.07.26</time>
               <span class="row-arrow" aria-hidden="true">↗</span>
@@ -184,8 +184,8 @@
               <div class="post-number">004</div>
               <div class="post-main">
                 <div class="post-meta"><span class="post-tag muted">Lab log</span><span>Notes</span></div>
-                <h3>A small fuzzing harness</h3>
-                <p>A shell script for running inputs and saving crashes.</p>
+                <h3>A tiny fuzzing harness for a rainy weekend</h3>
+                <p>Small inputs, useful crashes, and the shell script holding everything together.</p>
               </div>
               <time datetime="2026-06-11">11.06.26</time>
               <span class="row-arrow" aria-hidden="true">↗</span>
@@ -202,14 +202,15 @@
       <section class="about shell" id="about">
         <p class="section-index">03 / ABOUT</p>
         <div class="about-grid">
-          <h2>About<br /><span>this blog.</span></h2>
+          <h2>Not the movie genius.<br /><span>Still asks questions.</span></h2>
           <div class="about-copy">
             <p>
-              The name comes from Kalawy in <em>El Rahina</em>. I use this blog to keep my security
-              writeups, notes and tools in one place.
+              The name is a nod to Kalawy, the computer genius from <em>El Rahina</em>. This is my
+              corner for the messy edges between browsers, web applications, and the systems that
+              trust them—complete research, unfinished observations, and tools from the lab.
             </p>
             <p class="small-note">
-              Email me if you want to discuss a post or report a mistake.
+              If you want to compare notes, report an issue, or just say hello, my inbox is open.
             </p>
             <a class="button button-outline" href="mailto:hello@example.com">Say hello <span>↗</span></a>
           </div>
@@ -220,14 +221,14 @@
     <footer class="site-footer shell">
       <div>
         <span class="brand-mark" aria-hidden="true">ك</span>
-        <p>Security notes by Kalawy.</p>
+        <p>Breaking assumptions, documenting the pieces.</p>
       </div>
       <div class="footer-links">
         <a href="#">RSS</a>
         <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub ↗</a>
         <a href="mailto:hello@example.com">Email ↗</a>
       </div>
-      <p class="copyright">© 2026 Kalawy</p>
+      <p class="copyright">© 2026 Kalawy<br />Built from plain text.</p>
     </footer>
 
     <dialog class="search-dialog">
