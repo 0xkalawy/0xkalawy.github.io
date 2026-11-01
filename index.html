@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#071821" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Kalawy | Web and Mobile Security" />
-    <meta property="og:description" content="Mohamed Wagdy's vulnerability research, Write-Ups, and Researches on web and mobile security." />
+    <meta property="og:description" content="Mohamed Wagdy's vulnerability research, Write-Ups, Researches, and CVEs on web and mobile security." />
     <meta property="og:url" content="https://0xkalawy.github.io/" />
     <meta property="og:site_name" content="Kalawy" />
     <meta property="og:locale" content="en_US" />
@@ -22,7 +22,7 @@
     <meta property="og:image:alt" content="When the loser takes it all, Northstar CATF 2026 Finals" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Kalawy | Web and Mobile Security" />
-    <meta name="twitter:description" content="Mohamed Wagdy's vulnerability research, Write-Ups, and Researches on web and mobile security." />
+    <meta name="twitter:description" content="Mohamed Wagdy's vulnerability research, Write-Ups, Researches, and CVEs on web and mobile security." />
     <meta name="twitter:image" content="https://0xkalawy.github.io/assets/posts/northstar-player/thumbnail-social.jpg" />
     <meta name="twitter:image:alt" content="When the loser takes it all, Northstar CATF 2026 Finals" />
     <title>Mohamed Wagdy | 0xkalawy</title>
@@ -44,6 +44,7 @@
         <a class="active" href="#featured">Featured</a>
         <a href="#write-ups">Write-Ups</a>
         <a href="#researches">Researches</a>
+        <a href="#cves">CVEs</a>
         <a href="#about">About</a>
       </nav>
 
@@ -202,15 +203,61 @@
         </div>
       </section>
 
+      <section class="cves shell" id="cves">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">04 / CVES</p>
+            <h2>CVEs</h2>
+          </div>
+          <span class="entry-count">02 CVEs</span>
+        </div>
+
+        <div class="post-list">
+          <article class="post-row" data-kind="cve" data-search="cve 2026 104269 pending publication">
+            <a
+              href="https://www.cve.org/CVERecord?id=CVE-2026-104269"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="post-number">001</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag">CVE</span><span>Pending publication</span></div>
+                <h3>CVE-2026-104269</h3>
+                <p>Record details will be added when they are public.</p>
+              </div>
+              <span class="post-status">Pending</span>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="post-row" data-kind="cve" data-search="cve 2026 15913 goanywhere mft path traversal arbitrary file read fortra zerosploit">
+            <a
+              href="https://www.cve.org/CVERecord?id=CVE-2026-15913"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="post-number">002</div>
+              <div class="post-main">
+                <div class="post-meta"><span class="post-tag">Path Traversal</span><span>Published</span></div>
+                <h3>CVE-2026-15913</h3>
+                <p>Path traversal in Fortra's GoAnywhere MFT endpoint allows arbitrary file read.</p>
+              </div>
+              <time datetime="2026-09-09">09.09.26</time>
+              <span class="row-arrow" aria-hidden="true">↗</span>
+            </a>
+          </article>
+        </div>
+      </section>
+
       <section class="about shell" id="about">
-        <p class="section-index">04 / ABOUT</p>
+        <p class="section-index">05 / ABOUT</p>
         <div class="about-grid">
           <h2>Not the movie genius.<br /><span>Still asks questions.</span></h2>
           <div class="about-copy">
             <p>
               I’m Mohamed Wagdy, a vulnerability researcher from Egypt focused on web and mobile
               security. The name 0xkalawy is a nod to Kalawy from <em>El Rahina</em>. I use this
-              blog for Write-Ups, Researches, and tools.
+              blog for Write-Ups, Researches, CVEs, and tools.
             </p>
             <p class="small-note">
               You can reach me by email, LinkedIn, or X.
@@ -244,7 +291,7 @@
           <input type="search" placeholder="Search the notebook…" aria-label="Search posts" autocomplete="off" />
           <button type="submit" aria-label="Close search">ESC</button>
         </div>
-        <p>Try “Northstar”, “race”, “Prisma”, or “CATF”.</p>
+        <p>Try “Northstar”, “parser”, or “CVE”.</p>
       </form>
     </dialog>
   </body>

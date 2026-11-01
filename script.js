@@ -82,7 +82,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 const navLinks = [...document.querySelectorAll(".main-nav a")];
-const observedSections = [...document.querySelectorAll("#featured, #write-ups, #researches, #about")];
+const observedSections = [...document.querySelectorAll("#featured, #write-ups, #researches, #cves, #about")];
 const sectionObserver = new IntersectionObserver(
   (entries) => {
     const active = entries.find((entry) => entry.isIntersecting);

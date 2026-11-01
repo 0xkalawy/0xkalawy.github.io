@@ -265,7 +265,7 @@ svg { display: block; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .signal-track { animation: none; } .cursor { animation: none; } html { scroll-behavior: auto; } }
 
-.featured, .write-ups, .researches, .about { padding-block: 112px; }
+.featured, .write-ups, .researches, .cves, .about { padding-block: 112px; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 42px; }
 .section-index { margin: 0 0 16px; color: var(--accent); }
 .section-heading h2, .about h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.35rem); font-weight: 500; letter-spacing: -0.055em; }
@@ -302,7 +302,7 @@ svg { display: block; }
 .card-link { margin-top: 42px; font: 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
 .card-link b { display: inline-block; margin-left: 8px; color: var(--accent); transition: transform 160ms ease; }
 
-.write-ups, .researches { border-top: 1px solid var(--line); }
+.write-ups, .researches, .cves { border-top: 1px solid var(--line); }
 .write-ups-heading { align-items: end; }
 .filter-wrap { display: flex; gap: 5px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; }
 .filter-button { padding: 8px 15px; border: 0; border-radius: 999px; color: var(--muted); background: transparent; font-size: 0.78rem; cursor: pointer; }
@@ -320,7 +320,7 @@ svg { display: block; }
 .post-main { padding-block: 30px; }
 .post-main h3 { margin: 12px 0 7px; font-size: clamp(1.25rem, 2.4vw, 1.8rem); font-weight: 500; letter-spacing: -0.035em; transition: color 160ms ease; }
 .post-main p { margin: 0; color: var(--muted); line-height: 1.55; }
-.post-row time { color: var(--muted); font: 0.68rem var(--mono); white-space: nowrap; }
+.post-row time, .post-status { color: var(--muted); font: 0.68rem var(--mono); white-space: nowrap; }
 .row-arrow { color: var(--accent); transition: transform 160ms ease; }
 .empty-state { padding: 80px 0; text-align: center; color: var(--muted); }
 .empty-state span { color: var(--accent); font: 1.5rem var(--mono); }
@@ -380,13 +380,13 @@ svg { display: block; }
   .window-card { top: 48px; left: 1%; width: 94%; box-shadow: 10px 12px 0 color-mix(in srgb, var(--accent), transparent 20%); }
   .window-body { min-height: 220px; padding: 30px 15px 20px; font-size: 0.61rem; }
   .object-label-side { display: none; }
-  .featured, .write-ups, .researches, .about { padding-block: 82px; }
+  .featured, .write-ups, .researches, .cves, .about { padding-block: 82px; }
   .section-heading { align-items: start; flex-direction: column; }
   .featured-visual { min-height: 330px; }
   .featured-copy { min-height: 330px; }
   .post-row a { grid-template-columns: 34px 1fr 20px; gap: 12px; min-height: 150px; }
   .post-number { padding-top: 38px; }
-  .post-row time { grid-column: 2; grid-row: 2; align-self: start; margin-top: -24px; }
+  .post-row time, .post-status { grid-column: 2; grid-row: 2; align-self: start; margin-top: -24px; }
   .row-arrow { grid-column: 3; grid-row: 1; }
   .post-main { padding-block: 24px 42px; }
   .post-main p { display: none; }
@@ -545,7 +545,7 @@ svg { display: block; }
 .featured-copy .post-tag, .featured-copy .card-link b { color: #f4bd3f; }
 .visual-stamp { border-width: 2px; background: #f7edda; box-shadow: 3px 3px 0 #e9573f; }
 
-.write-ups, .researches { border-top: 0; }
+.write-ups, .researches, .cves { border-top: 0; }
 .post-list { display: grid; gap: 12px; border-top: 0; }
 .post-row { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); transition: transform 160ms ease, box-shadow 160ms ease; }
 .post-row:hover { background: var(--surface-2); box-shadow: 5px 5px 0 var(--accent); transform: translate(-2px, -2px); }
@@ -591,8 +591,8 @@ svg { display: block; }
 @media (max-width: 650px) {
   .site-header { min-height: 72px; }
   .brand-name small { display: none; }
-  .main-nav { top: 76px; border: 1px solid var(--line); border-radius: 12px; }
-  .main-nav { gap: 15px; font-size: .76rem; }
+  .main-nav { top: 76px; right: 6px; left: 6px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; padding: 10px 6px; border: 1px solid var(--line); border-radius: 12px; font-size: .65rem; }
+  .main-nav a { padding: 8px 2px; text-align: center; }
   .hero { padding-top: 92px; }
   .hero-stage { min-height: 850px; border-radius: 20px; box-shadow: 6px 6px 0 #2453d4; }
   .hero-copy { padding: 42px 24px 0; }
