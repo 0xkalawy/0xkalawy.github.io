@@ -121,6 +121,33 @@ svg { display: block; }
 }
 
 .header-actions { justify-self: end; display: flex; gap: 8px; }
+.cve-counter {
+  height: 39px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 7px 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface);
+  font: 0.67rem var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+.cve-counter:hover { color: var(--ink); background: var(--surface-2); transform: translateY(-2px); }
+.cve-counter strong {
+  min-width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #0b2230;
+  background: #f4bd3f;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
 .icon-button {
   min-width: 39px;
   height: 39px;

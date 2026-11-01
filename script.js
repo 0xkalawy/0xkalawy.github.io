@@ -17,6 +17,34 @@ themeButton.addEventListener("click", () => {
   localStorage.setItem("theme", nextTheme);
 });
 
+const cveCounter = document.querySelector("[data-cve-count]");
+
+function animateCveCounter() {
+  if (!cveCounter) return;
+
+  const target = Number(cveCounter.dataset.cveCount);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!Number.isFinite(target) || target < 1 || reduceMotion) {
+    cveCounter.textContent = Number.isFinite(target) ? target : 0;
+    return;
+  }
+
+  const start = performance.now();
+  const duration = 900;
+
+  function updateCounter(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    cveCounter.textContent = Math.floor(progress * target);
+
+    if (progress < 1) requestAnimationFrame(updateCounter);
+  }
+
+  requestAnimationFrame(updateCounter);
+}
+
+animateCveCounter();
+
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 const postRows = [...document.querySelectorAll(".post-row")];
 const emptyState = document.querySelector(".empty-state");
