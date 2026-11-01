@@ -30,20 +30,32 @@ function animateCveCounter() {
     return;
   }
 
-  const start = performance.now();
-  const duration = 900;
+  let current = 0;
+  cveCounter.textContent = current;
 
-  function updateCounter(now) {
-    const progress = Math.min((now - start) / duration, 1);
-    cveCounter.textContent = Math.floor(progress * target);
+  const timer = window.setInterval(() => {
+    current += 1;
+    cveCounter.textContent = current;
+    cveCounter.classList.remove("count-pop");
+    void cveCounter.offsetWidth;
+    cveCounter.classList.add("count-pop");
 
-    if (progress < 1) requestAnimationFrame(updateCounter);
-  }
-
-  requestAnimationFrame(updateCounter);
+    if (current >= target) window.clearInterval(timer);
+  }, 650);
 }
 
-animateCveCounter();
+if (cveCounter) {
+  const counterObserver = new IntersectionObserver(
+    (entries, observer) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      animateCveCounter();
+      observer.disconnect();
+    },
+    { threshold: 0.35 }
+  );
+
+  counterObserver.observe(cveCounter);
+}
 
 const filterButtons = [...document.querySelectorAll(".filter-button")];
 const postRows = [...document.querySelectorAll(".post-row")];

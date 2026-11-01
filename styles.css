@@ -121,33 +121,6 @@ svg { display: block; }
 }
 
 .header-actions { justify-self: end; display: flex; gap: 8px; }
-.cve-counter {
-  height: 39px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 7px 0 13px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  background: var(--surface);
-  font: 0.67rem var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
-}
-.cve-counter:hover { color: var(--ink); background: var(--surface-2); transform: translateY(-2px); }
-.cve-counter strong {
-  min-width: 25px;
-  height: 25px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: #0b2230;
-  background: #f4bd3f;
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-}
 .icon-button {
   min-width: 39px;
   height: 39px;
@@ -514,6 +487,29 @@ svg { display: block; }
 .hero-copy { position: relative; z-index: 3; padding: 68px 0 60px 64px; }
 .hero .eyebrow { color: #557078; }
 .hero .status-dot { background: #2453d4; box-shadow: 0 0 0 4px rgba(36,83,212,.14); }
+.hero-cve-counter {
+  position: absolute;
+  top: 48px;
+  right: 22px;
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 2px solid #0b2230;
+  border-radius: 50%;
+  color: #0b2230;
+  background: #f4bd3f;
+  box-shadow: 5px 5px 0 #e9573f;
+  font-family: var(--mono);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.hero-cve-counter:hover { box-shadow: 2px 2px 0 #e9573f; transform: translate(3px, 3px); }
+.hero-cve-counter strong { font-size: 2rem; line-height: 0.9; font-variant-numeric: tabular-nums; }
+.hero-cve-counter strong.count-pop { animation: cve-count-pop 280ms ease-out; }
+.hero-cve-counter span { margin-top: 7px; font-size: 0.62rem; letter-spacing: 0.14em; }
+@keyframes cve-count-pop { 50% { transform: scale(1.28); } }
 .hero h1 {
   margin: 40px 0 25px;
   color: #0b2230;
@@ -639,6 +635,9 @@ svg { display: block; }
   .hero { padding-top: 92px; }
   .hero-stage { min-height: 850px; border-radius: 20px; box-shadow: 6px 6px 0 #2453d4; }
   .hero-copy { padding: 42px 24px 0; }
+  .hero-cve-counter { position: static; width: 78px; height: 78px; margin: 24px 0; box-shadow: 4px 4px 0 #e9573f; }
+  .hero-cve-counter strong { font-size: 1.65rem; }
+  .hero-cve-counter span { margin-top: 5px; font-size: .56rem; }
   .hero h1 { font-size: clamp(3rem, 14vw, 3.55rem); }
   .hero-intro { font-size: .95rem; }
   .hero-actions { align-items: flex-start; flex-direction: column; gap: 18px; }
